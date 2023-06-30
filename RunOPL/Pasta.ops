@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<settings version="2">
+  <category name="language">
+    <setting name="bigmapthreshold" value="2000"/>
+  </category>
+  <category name="cplex">
+    <setting name="tilim" value="350.0"/>
+    <setting name="dettilim" value="350.0"/>
+    <setting name="threads" value="3"/>
+    <setting name="conflictdisplay" value="2"/>
+    <setting name="conflictalg" value="3"/>
+  </category>
+</settings>
