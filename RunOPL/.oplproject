@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="ASCII"?><project>
+    	
+    <version>1.0</version>
+    	
+    <configs>
+        		
+        <config default="true" name="PastaConfiguration" category="opl">
+            			
+            <ref name="Pasta.mod" type="model">
+			</ref>
+            			
+            <ref name="Pasta.ops" type="setting">
+			</ref>
+            			
+            <ref name="Pasta.dat" type="data">
+			</ref>
+            		
+        </config>
+        	
+    </configs>
+    	
+
+</project>
