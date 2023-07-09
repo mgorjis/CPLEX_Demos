@@ -1,4 +1,4 @@
-from docplex.cp.expression import CpoIntVar, CpoFunctionCall
+from docplex.cp.expression import CpoIntVar, CpoFunctionCall, CpoIntervalVar
 import re
 import numpy as np
 
@@ -19,16 +19,23 @@ def extract_solution(df_, mdl, msol, drop:bool=True ):
     
     
     def expression_extractor(x):
-        if type(x) in [CpoIntVar ]:
+        if type(x) in [CpoIntVar, ]:
             return int(Solution_Dict[x.name] )
         elif type(x) in [CpoFunctionCall ]:
-            return int ( eval (   multiple_replace(Solution_Dict, str(x))  ) )
+            try:
+                return int ( eval (   multiple_replace(Solution_Dict, str(x))  ) )
+            except:
+                return x
+        elif type(x) == CpoIntervalVar:
+            return msol.get_var_solution(x)
         else:
             return x
 
     evaluated_columns = []
     for column in  df.columns:
-        u= df[column].apply(lambda x: expression_extractor(x))  
+        u= df[column].apply(lambda x: expression_extractor(x)) 
+        #print(u.values) 
+        #print(df[column].values)
         if np.array(u.values != df[column].values).sum()!=0:
             df[column+"_Solution"] =  df[column].apply(lambda x: expression_extractor(x))  
 
