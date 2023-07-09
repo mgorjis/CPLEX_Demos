@@ -1,8 +1,10 @@
 from docplex.cp.expression import CpoIntVar, CpoFunctionCall
 import re
+import numpy as np
 
 def extract_solution(df_, mdl, msol, drop:bool=True ):
     df = df_.copy()
+    df = df.fillna('nan')
 
     Solution_Dict = {}
     for i in mdl.get_all_variables():
@@ -14,25 +16,23 @@ def extract_solution(df_, mdl, msol, drop:bool=True ):
         regex = re.compile("|".join(map(re.escape, adict.keys(  ))))
         # For each match, look up the corresponding value in the dictionary
         return regex.sub(lambda match: adict[match.group(0)], text)
-
-
-
-    types = [type(i) for i in df.iloc[0].values]
-    #print(types)
+    
+    
+    def expression_extractor(x):
+        if type(x) in [CpoIntVar ]:
+            return int(Solution_Dict[x.name] )
+        elif type(x) in [CpoFunctionCall ]:
+            return int ( eval (   multiple_replace(Solution_Dict, str(x))  ) )
+        else:
+            return x
 
     evaluated_columns = []
     for column in  df.columns:
-        column_type = type(df[column].iloc[0])  
-        #print(column, column_type)
-         
-        if column_type == CpoIntVar:
-            df[column+"_Solution"]= df[column].apply(lambda x:  int(Solution_Dict[x.name] )  )          #.apply(lambda x:msol.get_value(x) )
-            evaluated_columns.append(column)
+        u= df[column].apply(lambda x: expression_extractor(x))  
+        if np.array(u.values != df[column].values).sum()!=0:
+            df[column+"_Solution"] =  df[column].apply(lambda x: expression_extractor(x))  
 
-        if column_type == CpoFunctionCall:
-            df[column+"_Solution"] =  df[column].apply(lambda x: int ( eval (   multiple_replace(Solution_Dict, str(x))  )) )
-            evaluated_columns.append(column)
-
+    evaluated_columns = [i.replace("_Solution","") for i in df.columns if i.endswith("_Solution")]
     if drop == True:
         df.drop(evaluated_columns, axis=1, inplace=True)
 
