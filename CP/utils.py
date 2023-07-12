@@ -8,8 +8,8 @@ def extract_solution(df_, mdl, msol, drop:bool=True ):
 
     Solution_Dict = {}
     for i in mdl.get_all_variables():
-        Solution_Dict[i.name]= str(msol.get_value(i))
-
+        #Solution_Dict[i.name]= str(msol.get_value(i))
+        Solution_Dict[i.name]= 'msol["'+str(i.name)+'"]'
 
     def multiple_replace(adict, text):
         # Create a regular expression from all of the dictionary keys
@@ -20,20 +20,22 @@ def extract_solution(df_, mdl, msol, drop:bool=True ):
     
     def expression_extractor(x):
         if type(x) in [CpoIntVar, ]:
-            return int(Solution_Dict[x.name] )
+            return int(msol[x.name] )
         elif type(x) in [CpoFunctionCall ]:
             try:
                 return int ( eval (   multiple_replace(Solution_Dict, str(x))  ) )
+                #return  eval (   multiple_replace(Solution_Dict, str(x))  )   #int (
             except:
                 return x
-        elif type(x) == CpoIntervalVar:
-            return msol.get_var_solution(x)
+        #elif type(x) == CpoIntervalVar:
+            #return msol.get_var_solution(x)
         else:
             return x
 
     evaluated_columns = []
     for column in  df.columns:
         u= df[column].apply(lambda x: expression_extractor(x)) 
+        #print(column)
         #print(u.values) 
         #print(df[column].values)
         if np.array(u.values != df[column].values).sum()!=0:
