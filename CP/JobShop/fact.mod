@@ -13,8 +13,7 @@ dvar interval BuyTube   optional size 40;
 dvar interval SawTube   optional size 30; 
 dvar interval ClearTube optional size 20; 
 dvar interval MakeTube  optional;
-dvar interval MakeTubeSpan[1..2] = 
-  [SawTube, ClearTube]; 
+dvar interval MakeTubeSpan[1..2] = [SawTube, ClearTube]; 
 dvar interval GetTubeAlt[1..2] = [BuyTube, MakeTube]; 
 
   constraints {
