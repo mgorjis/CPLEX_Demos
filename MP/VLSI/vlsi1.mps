@@ -27,10 +27,8 @@ COLUMNS
     w2        c8                             -1
     w3        c7                              1
     w3        c10                            -1
-    H         obj1                            1
     H         c1                             -1
     H         c3                             -1
-    W         obj1                            1
     W         c6                             -1
     W         c7                             -1
     x1        c4                              1
@@ -69,4 +67,7 @@ BOUNDS
  BV bnd       d23     
  BV bnd       d31     
  BV bnd       d32     
+QMATRIX
+    H         W                               1
+    W         H                               1
 ENDATA
